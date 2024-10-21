@@ -1,27 +1,10 @@
 package models;
 
-/*public class MenuModel {
-    private String playerName;
-    private String selectedSuite;
+
+public class MenuModel {
 
     public MenuModel() {
-        this.playerName = "";
-        this.selectedSuite = "";
+    // rien du tout pour l'instant
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
-    public String getSelectedSuite() {
-        return selectedSuite;
-    }
-
-    public void setSelectedSuite(String selectedSuite) {
-        this.selectedSuite = selectedSuite;
-    } // Exemple mis de coté.
-}*/
+}
