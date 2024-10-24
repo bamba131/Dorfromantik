@@ -2,7 +2,6 @@ package controller;
 
 import model.Tile;
 import view.HexagonTile;
-import view.GameView;
 
 import java.awt.*;
 import java.util.Map;
@@ -24,62 +23,78 @@ public class GameController {
         this.nextTilePreview = nextTilePreview;
     }
 
-    public void placeInitialTile(Point position) {
-        addHexagonTile(position, gridPanel, 50);
+    public void placeInitialTile(Point position, CameraController cameraController) {
+        addHexagonTile(position, gridPanel, 50, cameraController); // Utilise CameraController
         availablePositions.remove(position);
 
         Point[] adjacentPositions = getAdjacentPositions(position);
         for (Point adj : adjacentPositions) {
             if (!hexagonMap.containsKey(adj)) {
                 availablePositions.add(adj);
-                addHexagonTile(adj, gridPanel, 50);
+                addHexagonTile(adj, gridPanel, 50, cameraController); // Utilise CameraController
             }
         }
     }
 
-    public void placeTile(Point position) {
+    public void placeTile(Point position, CameraController cameraController) {
         if (availablePositions.contains(position)) {
             HexagonTile hexTile = hexagonMap.get(position);
             if (hexTile != null && !hexTile.isFilled()) {
-                // Placer la tuile actuelle
-                hexTile.setTile(nextTile);
-
+                hexTile.setTile(nextTile);  // Placer la tuile
+                gridPanel.revalidate();  // Forcer le rafraîchissement de l'interface graphique
+                gridPanel.repaint();
+                
                 // Générer une nouvelle tuile et mettre à jour la prévisualisation
                 nextTile = generateRandomTile();
                 nextTilePreview.setTile(nextTile);
-
-                updateAdjacentPositions(position);
+                
+                // Mettre à jour les positions adjacentes
+                updateAdjacentPositions(position, cameraController);
+                
+                // Supprimer la position de la liste des positions disponibles
+                availablePositions.remove(position);
             }
         }
     }
 
-    private void addHexagonTile(Point position, JPanel panel, int hexSize) {
-        int xOffset = position.x * (int) (hexSize * 3 / 2);  // Décalage horizontal ajusté
-        int yOffset = position.y * (int) (Math.sqrt(3) * hexSize);  // Décalage vertical ajusté
-
+    public void addHexagonTile(Point position, JPanel panel, int hexSize, CameraController cameraController) {
+        int xOffset = position.x * (int) (hexSize * 3 / 2);
+        int yOffset = position.y * (int) (Math.sqrt(3) * hexSize);
+    
+        Point viewOffset = cameraController.getViewOffset();
+        xOffset += viewOffset.x;
+        yOffset += viewOffset.y;
+    
         if (position.x % 2 != 0) {
             yOffset += (int) (Math.sqrt(3) * hexSize / 2);
         }
-
+    
         HexagonTile hexTile = new HexagonTile(position);
         hexTile.setBounds(xOffset, yOffset, hexSize, hexSize);
-        hexTile.addMouseListener(new HexagonMouseListener(hexTile, this, availablePositions));
-
+    
+        // Ajout de l'écouteur pour gérer le clic sur l'hexagone
+        hexTile.addMouseListener(new HexagonMouseListener(hexTile, this, availablePositions, cameraController));
+    
         hexagonMap.put(position, hexTile);
         panel.add(hexTile);
         panel.revalidate();
         panel.repaint();
     }
+    
+    
+    
+    
 
-    private void updateAdjacentPositions(Point position) {
+    private void updateAdjacentPositions(Point position, CameraController cameraController) {
         Point[] adjacentPositions = getAdjacentPositions(position);
         for (Point adj : adjacentPositions) {
             if (!hexagonMap.containsKey(adj)) {
                 availablePositions.add(adj);
-                addHexagonTile(adj, gridPanel, 50);
+                addHexagonTile(adj, gridPanel, 50, cameraController); // Utilise les nouvelles positions logiques
             }
         }
     }
+    
 
     private Point[] getAdjacentPositions(Point position) {
         return new Point[]{
