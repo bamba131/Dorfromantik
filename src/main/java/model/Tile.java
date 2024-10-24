@@ -3,10 +3,6 @@ package model;
 import java.util.Random;
 
 public class Tile {
-    public enum TerrainType {
-        MER, CHAMP, PRE, FORET, MONTAGNE
-    }
-
     private TerrainType[] terrains;  // 4 terrains pour chaque quart de la tuile
     private static final Random random = new Random();
 

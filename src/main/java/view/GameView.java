@@ -1,11 +1,10 @@
 package view;
 
 import model.Tile;
+import controller.HexagonMouseListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -66,14 +65,9 @@ public class GameView extends JFrame {
     }
 
     private JPanel createHexagonGrid() {
-        JPanel panel = new JPanel(null) {
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(3000, 3000);
-            }
-        };
-        return panel;
+        return new HexagonGridPanel();
     }
+    
 
     // Ajouter un hexagone à une position donnée
     private void addHexagonTile(Point position, JPanel panel, int hexSize) {
@@ -87,14 +81,9 @@ public class GameView extends JFrame {
 
         HexagonTile hexTile = new HexagonTile(position);
         hexTile.setBounds(xOffset, yOffset, hexSize, hexSize);
-        hexTile.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (availablePositions.contains(hexTile.getPosition())) {
-                    placeTile(hexTile.getPosition());
-                }
-            }
-        });
+        // Utiliser la classe HexagonMouseListener à la place de la classe anonyme
+        hexTile.addMouseListener(new HexagonMouseListener(hexTile, this, availablePositions));
+
         hexagonMap.put(position, hexTile);
         panel.add(hexTile);
         panel.revalidate();
@@ -102,7 +91,7 @@ public class GameView extends JFrame {
     }
 
     // Placer une tuile à la position spécifiée
-    private void placeTile(Point position) {
+    public void placeTile(Point position) {
         if (availablePositions.contains(position)) {
             HexagonTile hexTile = hexagonMap.get(position);
             if (hexTile != null && !hexTile.isFilled()) {

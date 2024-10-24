@@ -1,6 +1,7 @@
 package view;
 
 import model.Tile;
+import model.TerrainType;  // Ajout de l'import pour TerrainType
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,7 +85,7 @@ public class HexagonTile extends JPanel {
     }
 
     // Obtenir la couleur en fonction du type de terrain
-    private Color getTerrainColor(Tile.TerrainType terrain) {
+    private Color getTerrainColor(TerrainType terrain) {
         switch (terrain) {
             case MER:
                 return Color.BLUE;
