@@ -1,14 +1,14 @@
 package controller;
 
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Set;
-
 import view.HexagonTile;
 import view.GameView;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Point;
+import java.util.Set;
 
 public class HexagonMouseListener extends MouseAdapter {
+
     private final HexagonTile hexTile;
     private final GameView gameView;
     private final Set<Point> availablePositions;
@@ -21,8 +21,9 @@ public class HexagonMouseListener extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (availablePositions.contains(hexTile.getPosition())) {
-            gameView.placeTile(hexTile.getPosition());
+        Point position = hexTile.getPosition();
+        if (availablePositions.contains(position)) {
+            gameView.placeTile(position);
         }
     }
 }

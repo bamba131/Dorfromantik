@@ -67,7 +67,6 @@ public class GameView extends JFrame {
     private JPanel createHexagonGrid() {
         return new HexagonGridPanel();
     }
-    
 
     // Ajouter un hexagone à une position donnée
     private void addHexagonTile(Point position, JPanel panel, int hexSize) {
