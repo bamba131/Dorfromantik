@@ -25,7 +25,7 @@ public class MenuView extends JComponent {
         panelCoté.setBackground(new Color(243,171,115,150));
         panelCoté.setPreferredSize(new Dimension(300,0));
 
-        backgroundImage = new ImageIcon("\\\\wsl.localhost\\Ubuntu-24.04\\home\\topb\\DEV\\SAE31_2024\\src\\main\\java\\view\\img\\bg.png").getImage();
+        backgroundImage = new ImageIcon("./view/img/bg.png").getImage();
         logo = new ImageIcon("\\\\wsl.localhost\\Ubuntu-24.04\\home\\topb\\DEV\\SAE31_2024\\src\\main\\java\\view\\img\\D.png");
         quit = new ImageIcon("\\\\wsl.localhost\\Ubuntu-24.04\\home\\topb\\DEV\\SAE31_2024\\src\\main\\java\\view\\img\\quit.png");
         Image quit1 = quit.getImage();

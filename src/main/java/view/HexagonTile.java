@@ -45,8 +45,8 @@ public class HexagonTile extends JPanel {
         g2d.setClip(largeHexagon);
 
         if (tile != null) {
-            // Dessiner les 4 quadrants de terrain
-            drawTerrainQuadrants(g2d, centerX, centerY, largeRadius);
+            // Dessiner les 6 segments de terrain en fonction des proportions
+            drawTerrainSegments(g2d, centerX, centerY, largeRadius);
         } else {
             g2d.setColor(Color.LIGHT_GRAY);  // Couleur par défaut pour une case vide
             g2d.fill(largeHexagon);
@@ -59,11 +59,19 @@ public class HexagonTile extends JPanel {
         g2d.draw(largeHexagon);
     }
 
-    // Dessiner les 4 quadrants de terrain
-    private void drawTerrainQuadrants(Graphics2D g2d, int centerX, int centerY, int radius) {
-        for (int i = 0; i < 4; i++) {
-            g2d.setColor(getTerrainColor(tile.getTerrain(i)));
-            g2d.fillArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 90 * i, 90);
+    // Dessiner les 6 segments de terrain avec une répartition variée
+    private void drawTerrainSegments(Graphics2D g2d, int centerX, int centerY, int radius) {
+        // Déterminer combien de segments sont attribués à chaque terrain
+        int segmentsTerrain1 = tile.getSegmentsForTerrain(0);
+
+        // Dessiner les segments adjacents pour chaque terrain
+        for (int i = 0; i < 6; i++) {
+            if (i < segmentsTerrain1) {
+                g2d.setColor(getTerrainColor(tile.getTerrain(0)));  // Premier terrain
+            } else {
+                g2d.setColor(getTerrainColor(tile.getTerrain(1)));  // Deuxième terrain
+            }
+            g2d.fillArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 60 * i, 60);
         }
     }
 
@@ -86,6 +94,10 @@ public class HexagonTile extends JPanel {
 
     // Obtenir la couleur en fonction du type de terrain
     private Color getTerrainColor(TerrainType terrain) {
+        if (terrain == null) {
+            return Color.WHITE;  // Par défaut si le terrain est nul
+        }
+
         switch (terrain) {
             case MER:
                 return Color.BLUE;
