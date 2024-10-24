@@ -1,7 +1,7 @@
 package view;
 
 import model.Tile;
-import model.TerrainType;  // Ajout de l'import pour TerrainType
+import model.TerrainType;
 
 import javax.swing.*;
 import java.awt.*;

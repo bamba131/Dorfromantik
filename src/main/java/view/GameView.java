@@ -1,7 +1,7 @@
 package view;
 
+import controller.GameController;
 import model.Tile;
-import controller.HexagonMouseListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +18,7 @@ public class GameView extends JFrame {
     private Tile nextTile;
     private HexagonTile nextTilePreview; // Tuile de prévisualisation à droite
     private int tileCount;
+    private GameController gameController;
 
     public GameView() {
         this.hexagonMap = new HashMap<>();
@@ -41,9 +42,12 @@ public class GameView extends JFrame {
         JPanel controlPanel = createControlPanel();
         add(controlPanel, BorderLayout.EAST);
 
+        // Initialiser le contrôleur
+        gameController = new GameController(hexagonMap, availablePositions, gridPanel, nextTile, nextTilePreview);
+
         // Placer la première tuile au centre
         Point initialPosition = new Point(0, 0);
-        placeInitialTile(initialPosition);
+        gameController.placeInitialTile(initialPosition);
         centerScrollOnPosition(initialPosition, scrollPane);
 
         pack();
@@ -51,81 +55,8 @@ public class GameView extends JFrame {
         setVisible(true);
     }
 
-    private void placeInitialTile(Point position) {
-        addHexagonTile(position, gridPanel, 50);
-        availablePositions.remove(position);
-
-        Point[] adjacentPositions = getAdjacentPositions(position);
-        for (Point adj : adjacentPositions) {
-            if (!hexagonMap.containsKey(adj)) {
-                availablePositions.add(adj);
-                addHexagonTile(adj, gridPanel, 50);
-            }
-        }
-    }
-
     private JPanel createHexagonGrid() {
         return new HexagonGridPanel();
-    }
-
-    // Ajouter un hexagone à une position donnée
-    private void addHexagonTile(Point position, JPanel panel, int hexSize) {
-        int xOffset = position.x * (int) (hexSize * 3 / 2);  // Décalage horizontal ajusté
-        int yOffset = position.y * (int) (Math.sqrt(3) * hexSize);  // Décalage vertical ajusté
-
-        // Décaler les colonnes impaires verticalement
-        if (position.x % 2 != 0) {
-            yOffset += (int) (Math.sqrt(3) * hexSize / 2);
-        }
-
-        HexagonTile hexTile = new HexagonTile(position);
-        hexTile.setBounds(xOffset, yOffset, hexSize, hexSize);
-        // Utiliser la classe HexagonMouseListener à la place de la classe anonyme
-        hexTile.addMouseListener(new HexagonMouseListener(hexTile, this, availablePositions));
-
-        hexagonMap.put(position, hexTile);
-        panel.add(hexTile);
-        panel.revalidate();
-        panel.repaint();
-    }
-
-    // Placer une tuile à la position spécifiée
-    public void placeTile(Point position) {
-        if (availablePositions.contains(position)) {
-            HexagonTile hexTile = hexagonMap.get(position);
-            if (hexTile != null && !hexTile.isFilled()) {
-                // Placer la tuile actuelle
-                hexTile.setTile(nextTile);
-                tileCount++;
-
-                // Générer une nouvelle tuile et mettre à jour la prévisualisation
-                nextTile = generateRandomTile();
-                nextTilePreview.setTile(nextTile);
-
-                updateAdjacentPositions(position);
-            }
-        }
-    }
-
-    private void updateAdjacentPositions(Point position) {
-        Point[] adjacentPositions = getAdjacentPositions(position);
-        for (Point adj : adjacentPositions) {
-            if (!hexagonMap.containsKey(adj)) {
-                availablePositions.add(adj);
-                addHexagonTile(adj, gridPanel, 50);
-            }
-        }
-    }
-
-    private Point[] getAdjacentPositions(Point position) {
-        return new Point[]{
-                new Point(position.x + 1, position.y),
-                new Point(position.x - 1, position.y),
-                new Point(position.x, position.y + 1),
-                new Point(position.x, position.y - 1),
-                new Point(position.x + 1, position.y - 1),
-                new Point(position.x - 1, position.y + 1)
-        };
     }
 
     private Tile generateRandomTile() {
@@ -152,9 +83,5 @@ public class GameView extends JFrame {
         panel.add(nextTilePreview);
 
         return panel;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameView());
     }
 }

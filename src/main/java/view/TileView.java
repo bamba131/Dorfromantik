@@ -1,7 +1,7 @@
 package view;
 
 import model.Tile;
-import model.TerrainType;  // Ajout de l'import pour TerrainType
+import model.TerrainType; 
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ public class TileView extends JPanel {
 
     public TileView(Tile tile) {
         this.tile = tile;
-        setPreferredSize(new Dimension(100, 100));  // Ajuste selon la taille de la tuile
+        setPreferredSize(new Dimension(100, 100));
     }
 
     @Override
