@@ -8,12 +8,12 @@ public class CameraController {
     private Point mouseDragStart = null;  // Stocke la position de départ du clic droit
     private Point viewOffset = new Point(0, 0); // Stocke le décalage actuel de la vue
     private JPanel gridPanel;
-    private GameContext context;  // Ajout de GameContext
+    private GameContext context;
 
     public CameraController(JPanel gridPanel, GameContext context) {
         this.gridPanel = gridPanel;
-        this.context = context;  // Initialisation du contexte
-        setupMouseDragToMove();
+        this.context = context;
+        setupMouseDragToMove(); // Initialise les écouteurs pour gérer le déplacement
     }
 
     public Point getViewOffset() {
@@ -21,15 +21,14 @@ public class CameraController {
     }
 
     public void updateViewOffset(int deltaX, int deltaY) {
-        viewOffset.translate(deltaX, deltaY); // Mettre à jour le décalage de la vue
-        gridPanel.setLocation(viewOffset); // Déplacer le panneau en fonction du décalage
+        viewOffset.translate(deltaX, deltaY);
+        gridPanel.setLocation(viewOffset);
     }
 
     private void setupMouseDragToMove() {
-        // Utilisation de GameContext dans les gestionnaires de la souris
         MousePressHandler mousePressHandler = new MousePressHandler(this, context);
         MouseDragHandler mouseDragHandler = new MouseDragHandler(this, context);
-    
+
         gridPanel.addMouseListener(mousePressHandler);
         gridPanel.addMouseMotionListener(mouseDragHandler);
     }

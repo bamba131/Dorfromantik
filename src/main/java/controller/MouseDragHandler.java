@@ -1,18 +1,15 @@
 package controller;
 
 import view.HexagonTile;
-
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.Point;
+import javax.swing.SwingUtilities;
 
 public class MouseDragHandler extends MouseAdapter {
 
     private CameraController controller;
-    private GameContext context;  // Utiliser GameContext pour regrouper les données
+    private GameContext context;
 
     public MouseDragHandler(CameraController controller, GameContext context) {
         this.controller = controller;
@@ -26,8 +23,8 @@ public class MouseDragHandler extends MouseAdapter {
             int deltaX = current.x - controller.getMouseDragStart().x;
             int deltaY = current.y - controller.getMouseDragStart().y;
 
-            // Déplacer uniquement les coordonnées visuelles, pas les coordonnées logiques
-            for (HexagonTile hexTile : context.hexagonMap.values()) {
+            // Déplace chaque tuile dans le contexte de la grille
+            for (HexagonTile hexTile : context.getHexagonMap().values()) {
                 Point currentPos = hexTile.getLocation();
                 hexTile.setLocation(currentPos.x + deltaX, currentPos.y + deltaY);
             }
@@ -44,37 +41,7 @@ public class MouseDragHandler extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
-            // Recalculer les positions logiques lorsque la souris est relâchée
-            Map<Point, HexagonTile> newHexagonMap = new HashMap<>();
-            
-            for (Map.Entry<Point, HexagonTile> entry : context.hexagonMap.entrySet()) {
-                HexagonTile hexTile = entry.getValue();
-                Point newLogicalPosition = calculateNewLogicalPosition(hexTile.getLocation());
-
-                // Mettre à jour les écouteurs de la souris
-                hexTile.removeMouseListener(hexTile.getMouseListeners()[0]);  // Supprimer l'ancien écouteur
-                hexTile.addMouseListener(new HexagonMouseListener(hexTile, context.gameController, context.availablePositions, context.cameraController));
-
-                // Ajouter la nouvelle position logique dans la nouvelle carte
-                newHexagonMap.put(newLogicalPosition, hexTile);
-            }
-
-            // Remplacer la carte hexagonMap avec la nouvelle carte
-            context.hexagonMap.clear();
-            context.hexagonMap.putAll(newHexagonMap);
-
             controller.resetMouseDragStart();
         }
-    }
-
-    private Point calculateNewLogicalPosition(Point visualPosition) {
-        int logicalX = visualPosition.x / (int) (50 * 3 / 2);  // Ajuste pour la largeur de l'hexagone
-        int logicalY = visualPosition.y / (int) (Math.sqrt(3) * 50);  // Ajuste pour la hauteur de l'hexagone
-    
-        if (logicalX % 2 != 0) {
-            logicalY -= (int) (Math.sqrt(3) * 50 / 2);  // Ajustement pour les colonnes impaires
-        }
-
-        return new Point(logicalX, logicalY);
     }
 }
