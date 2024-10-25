@@ -1,36 +1,34 @@
 package controller;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.Point;
+
 
 public class CameraController {
 
-    private Point mouseDragStart = null;  // Stocke la position de départ du clic droit
-    private Point viewOffset = new Point(0, 0); // Stocke le décalage actuel de la vue
-    private JPanel gridPanel;
+    private Point mouseDragStart = null;
     private GameContext context;
+    private JPanel gridPanel;
 
     public CameraController(JPanel gridPanel, GameContext context) {
         this.gridPanel = gridPanel;
         this.context = context;
-        setupMouseDragToMove(); // Initialise les écouteurs pour gérer le déplacement
-    }
-
-    public Point getViewOffset() {
-        return viewOffset;
+        setupMouseDragToMove(gridPanel); // Initialise les écouteurs pour gérer le déplacement
     }
 
     public void updateViewOffset(int deltaX, int deltaY) {
-        viewOffset.translate(deltaX, deltaY);
-        gridPanel.setLocation(viewOffset);
+        // Met à jour uniquement l'offset dans GameContext
+        context.updateOffset(deltaX, deltaY);
+        // Repeindre la grille après mise à jour
+        context.repaintGrid(gridPanel);
+
+        // Debug : Affiche l'offset actuel
+        System.out.println("Nouvel offset dans GameContext : " + context.getOffset());
     }
 
-    private void setupMouseDragToMove() {
-        MousePressHandler mousePressHandler = new MousePressHandler(this, context);
-        MouseDragHandler mouseDragHandler = new MouseDragHandler(this, context);
-
-        gridPanel.addMouseListener(mousePressHandler);
-        gridPanel.addMouseMotionListener(mouseDragHandler);
+    private void setupMouseDragToMove(JPanel gridPanel) {
+        gridPanel.addMouseListener(new MousePressHandler(this, context));
+        gridPanel.addMouseMotionListener(new MouseDragHandler(this, context));
     }
 
     public void setMouseDragStart(Point point) {
@@ -45,7 +43,7 @@ public class CameraController {
         this.mouseDragStart = null;
     }
 
-    public JPanel getGridPanel() {
-        return gridPanel;
+    public Point getViewOffset() {
+        return context.getOffset();
     }
 }

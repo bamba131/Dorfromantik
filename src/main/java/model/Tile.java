@@ -6,11 +6,23 @@ public class Tile {
     private TerrainType[] terrains;  // 2 terrains maximum par tuile
     private int segmentsForTerrain1;  // Nombre de segments pour le premier terrain
     private static final Random random = new Random();
+    private int rotation;
 
     public Tile() {
         this.terrains = new TerrainType[2];  // Seulement deux terrains
         generateTerrains();
         assignSegments();
+        this.rotation = 0;  // Rotation initiale à 0
+    }
+
+    // Méthode pour tourner la tuile dans le sens des aiguilles d'une montre
+    public void rotateClockwise() {
+        rotation = (rotation + 1) % 6;  // Modulo 6 pour garder une rotation entre 0 et 5
+    }
+
+    // Méthode pour obtenir la rotation actuelle
+    public int getRotation() {
+        return rotation;
     }
 
     // Génère deux terrains aléatoires pour la tuile

@@ -3,6 +3,7 @@ package view;
 import controller.GameController;
 import controller.CameraController;
 import controller.GameContext;
+import controller.MouseWheelController;
 import model.Tile;
 
 import javax.swing.*;
@@ -10,8 +11,8 @@ import java.awt.*;
 
 public class GameView extends JFrame {
     private JPanel gridPanel;
-    private Tile nextTile;
-    private HexagonTile nextTilePreview;
+    private Tile nextTile;  // Tuile en attente
+    private HexagonTile nextTilePreview;  // Composant pour afficher la tuile en attente
     private GameController gameController;
     private CameraController cameraController;
     private GameContext gameContext;
@@ -34,48 +35,42 @@ public class GameView extends JFrame {
 
         add(gridPanel, BorderLayout.CENTER);
 
-        // Créer le panneau de contrôle à droite
+        // Initialiser la tuile en attente et la preview
+        nextTile = new Tile();
+        nextTilePreview = new HexagonTile(null);
+        nextTilePreview.setTile(nextTile);  // Lier nextTile à la preview
         JPanel controlPanel = createControlPanel();
         controlPanel.setPreferredSize(new Dimension(200, 600));
         add(controlPanel, BorderLayout.EAST);
 
         // Initialiser les contrôleurs avec le contexte de jeu
-        gameController = new GameController(gameContext, gridPanel, nextTile, nextTilePreview);
+        gameController = new GameController(gameContext, gridPanel, nextTile, nextTilePreview);  // Passer nextTile et nextTilePreview
         cameraController = new CameraController(gridPanel, gameContext);
 
-        // Générer une première tuile pleine et la placer au centre
-        placeInitialTileWithRandomTile();
+        // Ajouter un écouteur pour la molette de la souris
+        MouseWheelController wheelController = new MouseWheelController(nextTilePreview, gameController);
+
+        addMouseWheelListener(wheelController);
+
+        // Appeler l'initialisation du jeu
+        gameController.initializeGame(cameraController);
 
         setVisible(true);
     }
 
     private JPanel createHexagonGrid() {
         JPanel panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(null); // Permet de placer des composants avec des coordonnées absolues
         panel.setBackground(Color.WHITE);
-        panel.setPreferredSize(new Dimension(800, 800));
+        panel.setPreferredSize(new Dimension(800, 800));  // Peut être ajusté si nécessaire
         return panel;
     }
 
     private void centerGridPanel() {
-        int gridX = (getWidth() - gridPanel.getPreferredSize().width) / 2;
-        int gridY = (getHeight() - gridPanel.getPreferredSize().height) / 2;
-
-        gridPanel.setLocation(gridX, gridY);
-        gameContext.updateOffset(gridX, gridY);  // Mettre à jour l'offset dans GameContext
-    }
-
-    private Tile generateRandomTile() {
-        return new Tile(); // Génère une tuile aléatoire avec des caractéristiques définies dans Tile.java
-    }
-
-    private void placeInitialTileWithRandomTile() {
-        // Générer une première tuile pleine de manière aléatoire
-        Tile initialTile = generateRandomTile();
-
-        // Utiliser `placeInitialTile` pour placer cette tuile au centre de la grille
-        Point initialPosition = new Point(0, 0);
-        gameController.placeInitialTile(initialPosition, cameraController, initialTile);
+        int centerX = (getWidth() - gridPanel.getPreferredSize().width) / 2;
+        int centerY = (getHeight() - gridPanel.getPreferredSize().height) / 2;
+        gameContext.updateOffset(centerX, centerY);
+        gameContext.repaintGrid(gridPanel);  // Rappel pour centrer initialement les tuiles
     }
 
     private JPanel createControlPanel() {
@@ -87,7 +82,6 @@ public class GameView extends JFrame {
         panel.add(new JLabel("Prochaine tuile : "));
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        nextTilePreview = new HexagonTile(null);
         nextTilePreview.setPreferredSize(new Dimension(150, 150));
         nextTilePreview.setBackground(Color.GRAY);
         nextTilePreview.setOpaque(true);

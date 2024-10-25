@@ -27,6 +27,10 @@ public class HexagonTile extends JPanel {
         repaint();
     }
 
+    public Tile getTile() {
+        return tile;
+    }
+
     public boolean isFilled() {
         return this.tile != null;  // Vérifie si la tuile a déjà été placée
     }
@@ -45,8 +49,8 @@ public class HexagonTile extends JPanel {
         g2d.setClip(largeHexagon);
 
         if (tile != null) {
-            // Dessiner les 6 segments de terrain en fonction des proportions
-            drawTerrainSegments(g2d, centerX, centerY, largeRadius);
+            // Dessiner les 6 segments de terrain en fonction des proportions et de la rotation
+            drawTerrainSegments(g2d, centerX, centerY, largeRadius, tile.getRotation());
         } else {
             g2d.setColor(Color.LIGHT_GRAY);  // Couleur par défaut pour une case vide
             g2d.fill(largeHexagon);
@@ -59,14 +63,12 @@ public class HexagonTile extends JPanel {
         g2d.draw(largeHexagon);
     }
 
-    // Dessiner les 6 segments de terrain avec une répartition variée
-    private void drawTerrainSegments(Graphics2D g2d, int centerX, int centerY, int radius) {
-        // Déterminer combien de segments sont attribués à chaque terrain
+    // Dessiner les 6 segments de terrain avec la rotation
+    private void drawTerrainSegments(Graphics2D g2d, int centerX, int centerY, int radius, int rotation) {
         int segmentsTerrain1 = tile.getSegmentsForTerrain(0);
-
-        // Dessiner les segments adjacents pour chaque terrain
         for (int i = 0; i < 6; i++) {
-            if (i < segmentsTerrain1) {
+            int segmentIndex = (i + rotation) % 6;  // Appliquer la rotation aux segments
+            if (segmentIndex < segmentsTerrain1) {
                 g2d.setColor(getTerrainColor(tile.getTerrain(0)));  // Premier terrain
             } else {
                 g2d.setColor(getTerrainColor(tile.getTerrain(1)));  // Deuxième terrain
