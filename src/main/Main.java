@@ -16,10 +16,7 @@ public class Main {
             MenuModel model = new MenuModel();
             MenuView view = new MenuView();
 
-            JFrame frame = new JFrame(" Menu");
-            frame.setSize(1500, 750);                                  
-            frame.setLocation(0, 0);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JFrame frame = App.getInstance();
             frame.add(view);
 
             // Créer le contrôleur

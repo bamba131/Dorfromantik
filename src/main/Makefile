@@ -21,7 +21,7 @@ java/controller/NewListener.class: java/controller/NewListener.java
 java/controller/QuiListener.class: java/controller/QuiListener.java
 	$(JC) $(JCFLAGS) java/controller/QuiListener.java
 
-java/controller/ResListener.class: java/controller/ResListener.java java/view/GameView.class
+java/controller/ResListener.class: java/controller/ResListener.java java/view/GameView.class java/view/App.class 
 	$(JC) $(JCFLAGS) java/controller/ResListener.java
 
 java/controller/GameController.class: java/controller/GameController.java java/controller/TilePlacer.class java/model/Tile.class java/controller/CameraController.class java/controller/HexagonMouseListener.class
@@ -65,6 +65,9 @@ java/view/BtnPerso.class: java/view/BtnPerso.java
 
 java/view/ButtonHoverListener.class: java/view/ButtonHoverListener.java
 	$(JC) $(JCFLAGS) java/view/ButtonHoverListener.java
+
+java/view/App.class: java/view/App.java
+	$(JC) $(JCFLAGS) java/view/App.java
 
 # Compilation des handlers
 java/controller/MousePressHandler.class: java/controller/MousePressHandler.java java/controller/CameraControllerListener.class
