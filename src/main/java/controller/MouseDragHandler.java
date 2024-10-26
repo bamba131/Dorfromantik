@@ -7,31 +7,31 @@ import javax.swing.SwingUtilities;
 
 public class MouseDragHandler extends MouseAdapter {
 
-    private CameraController controller;
+    private CameraControllerListener listener;
 
-    public MouseDragHandler(CameraController controller, GameContext context) {
-        this.controller = controller;
+    public MouseDragHandler(CameraControllerListener listener) {
+        this.listener = listener;
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (controller.getMouseDragStart() != null && SwingUtilities.isRightMouseButton(e)) {
+        if (listener.getMouseDragStart() != null && SwingUtilities.isRightMouseButton(e)) {
             Point current = e.getPoint();
-            int deltaX = current.x - controller.getMouseDragStart().x;
-            int deltaY = current.y - controller.getMouseDragStart().y;
+            int deltaX = current.x - listener.getMouseDragStart().x;
+            int deltaY = current.y - listener.getMouseDragStart().y;
 
             // Déplacement dans CameraController
-            controller.updateViewOffset(deltaX, deltaY);
+            listener.updateViewOffset(deltaX, deltaY);
 
             // Met à jour la position de départ
-            controller.setMouseDragStart(current);
+            listener.setMouseDragStart(current);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
-            controller.resetMouseDragStart();
+            listener.resetMouseDragStart();
         }
     }
 }

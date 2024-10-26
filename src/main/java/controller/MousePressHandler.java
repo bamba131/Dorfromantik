@@ -1,28 +1,28 @@
 package controller;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
 public class MousePressHandler extends MouseAdapter {
 
-    private CameraController controller;
+    private CameraControllerListener listener;
 
-    public MousePressHandler(CameraController controller, GameContext context) {
-        this.controller = controller;
+    public MousePressHandler(CameraControllerListener listener) {
+        this.listener = listener;
     }
-    
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
-            System.out.println("Clic droit détecté");
-            controller.setMouseDragStart(e.getPoint());
+            listener.setMouseDragStart(e.getPoint());
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
-            controller.resetMouseDragStart();
+            listener.resetMouseDragStart();
         }
     }
 }

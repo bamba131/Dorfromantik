@@ -8,7 +8,7 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.Set;
 
-public class GameController {
+public class GameController implements TilePlacer {
     private Map<Point, HexagonTile> hexagonMap;
     private Set<Point> availablePositions;
     private JPanel gridPanel;
@@ -28,8 +28,8 @@ public class GameController {
         updatePreview();
     }
 
+    @Override
     public void placeTile(Point position) {
-        // Vérifier si la position est disponible
         if (availablePositions.contains(position)) {
             HexagonTile hexTile = hexagonMap.get(position);
             if (hexTile == null) {
@@ -37,27 +37,21 @@ public class GameController {
                 return;
             }
 
-            // Assigner la tuile actuelle
             hexTile.setTile(nextTile);
             gridPanel.revalidate();
             gridPanel.repaint();
 
-            // Retirer la position des positions disponibles
             availablePositions.remove(position);
 
-            // Mettre à jour les positions adjacentes
             Point[] adjacentPositions = getAdjacentPositions(position);
             for (Point adj : adjacentPositions) {
                 if (!hexagonMap.containsKey(adj)) {
                     availablePositions.add(adj);
-                    addHexagonTile(adj, gridPanel, 50, null, null);  // Ajouter des placeholders
+                    addHexagonTile(adj, gridPanel, 50, null, null);
                 }
             }
 
-            // Repeindre la grille
             gameContext.repaintGrid(gridPanel);
-
-            // Générer une nouvelle tuile pour la prochaine preview
             generateNextTile();
         }
     }
@@ -72,8 +66,6 @@ public class GameController {
         initialPosition.setLocation(centerX / 50, centerY / 50);
 
         placeInitialTile(initialPosition, cameraController, initialTile);
-
-        // Générer la première tuile pour la preview
         generateNextTile();
     }
 
@@ -126,7 +118,6 @@ public class GameController {
     }
 
     public void generateNextTile() {
-        // Génère une nouvelle tuile pour la prochaine pose
         nextTile = new Tile();
         updatePreview();
     }

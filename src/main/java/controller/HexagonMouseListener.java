@@ -8,12 +8,12 @@ import java.util.Set;
 
 public class HexagonMouseListener extends MouseAdapter {
     private final HexagonTile hexTile;
-    private final GameController gameController;
+    private final TilePlacer tilePlacer;
     private final Set<Point> availablePositions;
 
-    public HexagonMouseListener(HexagonTile hexTile, GameController gameController, Set<Point> availablePositions) {
+    public HexagonMouseListener(HexagonTile hexTile, TilePlacer tilePlacer, Set<Point> availablePositions) {
         this.hexTile = hexTile;
-        this.gameController = gameController;
+        this.tilePlacer = tilePlacer;
         this.availablePositions = availablePositions;
     }
 
@@ -22,12 +22,7 @@ public class HexagonMouseListener extends MouseAdapter {
         Point position = hexTile.getPosition();
         if (availablePositions.contains(position)) {
             System.out.println("Hexagone cliqué à la position : " + position);
-
-            // Appeler le GameController pour placer une nouvelle tuile à cet emplacement
-            gameController.placeTile(position);
-
-            // Générer la prochaine tuile après avoir placé celle-ci
-            gameController.generateNextTile();
+            tilePlacer.placeTile(position);
         } else {
             System.out.println("Position non disponible pour le placement");
         }

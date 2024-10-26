@@ -22,9 +22,9 @@ public class MenuView extends JComponent {
         panelCoté.setPreferredSize(new Dimension(300, 0));
 
         // Utilisation de getResource pour charger les images
-        backgroundImage = new ImageIcon(getClass().getResource("/view/img/bg.png")).getImage();
-        logo = new ImageIcon(getClass().getResource("/view/img/D.png"));
-        quit = new ImageIcon(getClass().getResource("/view/img/quit.png"));
+        backgroundImage = new ImageIcon(getClass().getResource("/java/view/img/bg.png")).getImage();
+        logo = new ImageIcon(getClass().getResource("/java/view/img/D.png"));
+        quit = new ImageIcon(getClass().getResource("/java/view/img/quit.png"));
 
         // Redimensionnement des images
         Image quit1 = quit.getImage();

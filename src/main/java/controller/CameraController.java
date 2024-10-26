@@ -3,8 +3,7 @@ package controller;
 import javax.swing.JPanel;
 import java.awt.Point;
 
-
-public class CameraController {
+public class CameraController implements CameraControllerListener {
 
     private Point mouseDragStart = null;
     private GameContext context;
@@ -16,6 +15,7 @@ public class CameraController {
         setupMouseDragToMove(gridPanel); // Initialise les écouteurs pour gérer le déplacement
     }
 
+    @Override
     public void updateViewOffset(int deltaX, int deltaY) {
         // Met à jour uniquement l'offset dans GameContext
         context.updateOffset(deltaX, deltaY);
@@ -27,18 +27,21 @@ public class CameraController {
     }
 
     private void setupMouseDragToMove(JPanel gridPanel) {
-        gridPanel.addMouseListener(new MousePressHandler(this, context));
-        gridPanel.addMouseMotionListener(new MouseDragHandler(this, context));
+        gridPanel.addMouseListener(new MousePressHandler(this));
+        gridPanel.addMouseMotionListener(new MouseDragHandler(this));
     }
 
+    @Override
     public void setMouseDragStart(Point point) {
         this.mouseDragStart = point;
     }
 
+    @Override
     public Point getMouseDragStart() {
         return mouseDragStart;
     }
 
+    @Override
     public void resetMouseDragStart() {
         this.mouseDragStart = null;
     }
