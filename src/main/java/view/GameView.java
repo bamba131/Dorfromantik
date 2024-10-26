@@ -4,15 +4,13 @@ import controller.GameController;
 import controller.CameraController;
 import controller.GameContext;
 import controller.MouseWheelController;
-import model.Tile;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GameView extends JFrame {
     private JPanel gridPanel;
-    private Tile nextTile;  // Tuile en attente
-    private HexagonTile nextTilePreview;  // Composant pour afficher la tuile en attente
+    private HexagonTile nextTilePreview;
     private GameController gameController;
     private CameraController cameraController;
     private GameContext gameContext;
@@ -35,16 +33,15 @@ public class GameView extends JFrame {
 
         add(gridPanel, BorderLayout.CENTER);
 
-        // Initialiser la tuile en attente et la preview
-        nextTile = new Tile();
-        nextTilePreview = new HexagonTile(null);
-        nextTilePreview.setTile(nextTile);  // Lier nextTile à la preview
+        // Initialiser la preview pour la prochaine tuile
+        nextTilePreview = new HexagonTile(null, false);
+
         JPanel controlPanel = createControlPanel();
         controlPanel.setPreferredSize(new Dimension(200, 600));
         add(controlPanel, BorderLayout.EAST);
 
         // Initialiser les contrôleurs avec le contexte de jeu
-        gameController = new GameController(gameContext, gridPanel, nextTile, nextTilePreview);  // Passer nextTile et nextTilePreview
+        gameController = new GameController(gameContext, gridPanel, nextTilePreview);
         cameraController = new CameraController(gridPanel, gameContext);
 
         // Ajouter un écouteur pour la molette de la souris

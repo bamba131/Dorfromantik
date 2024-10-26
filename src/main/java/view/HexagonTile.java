@@ -8,14 +8,15 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 
 public class HexagonTile extends JPanel {
-
     private Tile tile;
     private Point position;
+    private boolean isPlaceholder;  // Nouveau champ pour indiquer si l'hexagone est un placeholder
 
-    public HexagonTile(Point position) {
+    public HexagonTile(Point position, boolean isPlaceholder) {
         this.position = position;
+        this.isPlaceholder = isPlaceholder;
         this.tile = null;
-        setPreferredSize(new Dimension(100, 100));  // Ajuste selon la taille de la tuile
+        setPreferredSize(new Dimension(100, 100));
     }
 
     public Point getPosition() {
@@ -24,6 +25,7 @@ public class HexagonTile extends JPanel {
 
     public void setTile(Tile tile) {
         this.tile = tile;
+        this.isPlaceholder = false;  // Une fois la tuile posée, ce n'est plus un placeholder
         repaint();
     }
 
@@ -32,7 +34,7 @@ public class HexagonTile extends JPanel {
     }
 
     public boolean isFilled() {
-        return this.tile != null;  // Vérifie si la tuile a déjà été placée
+        return this.tile != null;
     }
 
     @Override
@@ -42,42 +44,35 @@ public class HexagonTile extends JPanel {
 
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
-        int largeRadius = 50;
+        int largeRadius = isPlaceholder ? 40 : 50;  // Réduction de taille pour les placeholders
 
-        // Créer la zone de découpe pour le grand hexagone
         Shape largeHexagon = createHexagon(centerX, centerY, largeRadius);
         g2d.setClip(largeHexagon);
 
         if (tile != null) {
-            // Dessiner les 6 segments de terrain en fonction des proportions et de la rotation
             drawTerrainSegments(g2d, centerX, centerY, largeRadius, tile.getRotation());
         } else {
-            g2d.setColor(Color.LIGHT_GRAY);  // Couleur par défaut pour une case vide
+            g2d.setColor(Color.LIGHT_GRAY);
             g2d.fill(largeHexagon);
         }
 
-        // Dessiner la bordure de l'hexagone
         g2d.setClip(null);
         g2d.setColor(Color.BLACK);
-        g2d.setStroke(new BasicStroke(3));  // Bordure épaisse
+        g2d.setStroke(new BasicStroke(3));
         g2d.draw(largeHexagon);
     }
 
-    // Dessiner les 6 segments de terrain avec la rotation
     private void drawTerrainSegments(Graphics2D g2d, int centerX, int centerY, int radius, int rotation) {
         int segmentsTerrain1 = tile.getSegmentsForTerrain(0);
         for (int i = 0; i < 6; i++) {
-            int segmentIndex = (i + rotation) % 6;  // Appliquer la rotation aux segments
-            if (segmentIndex < segmentsTerrain1) {
-                g2d.setColor(getTerrainColor(tile.getTerrain(0)));  // Premier terrain
-            } else {
-                g2d.setColor(getTerrainColor(tile.getTerrain(1)));  // Deuxième terrain
-            }
+            int segmentIndex = (i + rotation) % 6;
+            g2d.setColor(segmentIndex < segmentsTerrain1 ? 
+                         getTerrainColor(tile.getTerrain(0)) : 
+                         getTerrainColor(tile.getTerrain(1)));
             g2d.fillArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 60 * i, 60);
         }
     }
 
-    // Créer la forme hexagonale
     private Shape createHexagon(int centerX, int centerY, int radius) {
         Path2D hexagon = new Path2D.Double();
         for (int i = 0; i < 6; i++) {
@@ -94,25 +89,17 @@ public class HexagonTile extends JPanel {
         return hexagon;
     }
 
-    // Obtenir la couleur en fonction du type de terrain
     private Color getTerrainColor(TerrainType terrain) {
         if (terrain == null) {
-            return Color.WHITE;  // Par défaut si le terrain est nul
+            return Color.WHITE;
         }
-
         switch (terrain) {
-            case MER:
-                return Color.BLUE;
-            case CHAMP:
-                return Color.YELLOW;
-            case PRE:
-                return Color.GREEN;
-            case FORET:
-                return new Color(34, 139, 34);  // Vert foncé
-            case MONTAGNE:
-                return Color.GRAY;
-            default:
-                return Color.WHITE;
+            case MER: return Color.BLUE;
+            case CHAMP: return Color.YELLOW;
+            case PRE: return Color.GREEN;
+            case FORET: return new Color(34, 139, 34);
+            case MONTAGNE: return Color.GRAY;
+            default: return Color.WHITE;
         }
     }
 }
