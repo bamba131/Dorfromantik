@@ -58,11 +58,13 @@ public class GameController implements TilePlacer {
                 return;
             }
 
+            // Placer la tuile actuelle
             hexTile.setTile(nextTile);
             gridPanel.revalidate();
             gridPanel.repaint();
             availablePositions.remove(position);
 
+            // Mettre à jour les positions disponibles autour de la tuile ajoutée
             for (Point adj : getAdjacentPositions(position)) {
                 if (!hexagonMap.containsKey(adj)) {
                     availablePositions.add(adj);
@@ -71,13 +73,17 @@ public class GameController implements TilePlacer {
             }
 
             gameContext.repaintGrid(gridPanel);
-            generateNextTile();
             scoreGameContext.calculateScore();
 
+            // Incrémenter le nombre de tuiles placées et vérifier si la limite est atteinte
             placedTileCount++;
-            if (placedTileCount >= 50) {
-                endGame(); // Appeler endGame pour terminer la partie
+            if (placedTileCount > 48) {
+                endGame();  // Terminer la partie si on a atteint la 50ᵉ tuile pile
+                return;  // Arrêter ici pour éviter de générer une tuile vide
             }
+
+            // Générer la prochaine tuile si la partie n'est pas terminée
+            generateNextTile();
         }
     }
 

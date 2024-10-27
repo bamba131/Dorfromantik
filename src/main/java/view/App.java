@@ -13,7 +13,7 @@ public class App {
     private static JPanel mainPanel;
 
     static {
-        frame = new JFrame("Application de Jeu");
+        frame = new JFrame("DorfJavatik");
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         frame.setContentPane(mainPanel);
