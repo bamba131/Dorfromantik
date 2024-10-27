@@ -1,7 +1,8 @@
 package main;
 
 import model.MenuModel;
-import controller.*;
+import controller.MenuController;
+import controller.SeriesSelector;
 import view.*;
 
 import javax.sound.sampled.AudioInputStream;
@@ -16,31 +17,31 @@ public class Main {
             MenuModel model = new MenuModel();
             MenuView view = new MenuView();
 
+            // Initialiser SeriesSelector et le passer à MenuView
+            SeriesSelector seriesSelector = new SeriesSelector();
+            view.setSeriesSelector(seriesSelector);
+
+            // Créer MenuController avec model, view et seriesSelector
+            new MenuController(model, view, seriesSelector);
+
             JFrame frame = App.getInstance();
             frame.add(view);
-
-            // Créer le contrôleur
-            new MenuController(model, view);
-
             frame.setVisible(true);
 
-            // Chargement de la musique
             PlayMusic("/Music/audio.wav");
         });
     }
 
-    public static void PlayMusic(String location){
+    public static void PlayMusic(String location) {
         try {
-            // Utilisation de getResource pour charger l'audio
             URL url = Main.class.getResource(location);
-
             if (url != null) {
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(url);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioInput);
                 clip.start();
             } else {
-                System.out.println("fichier introuvable");
+                System.out.println("Fichier audio introuvable");
             }
         } catch (Exception e) {
             System.out.println(e);

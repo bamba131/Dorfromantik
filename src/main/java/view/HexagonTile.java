@@ -10,7 +10,7 @@ import java.awt.geom.Path2D;
 public class HexagonTile extends JPanel {
     private Tile tile;
     private Point position;
-    private boolean isPlaceholder;  // Nouveau champ pour indiquer si l'hexagone est un placeholder
+    private boolean isPlaceholder;  // Indicateur si l'hexagone est un placeholder
 
     public HexagonTile(Point position, boolean isPlaceholder) {
         this.position = position;
@@ -50,7 +50,7 @@ public class HexagonTile extends JPanel {
         g2d.setClip(largeHexagon);
 
         if (tile != null) {
-            drawTerrainSegments(g2d, centerX, centerY, largeRadius, tile.getRotation());
+            drawTerrainSegments(g2d, centerX, centerY, largeRadius);
         } else {
             g2d.setColor(Color.LIGHT_GRAY);
             g2d.fill(largeHexagon);
@@ -62,13 +62,11 @@ public class HexagonTile extends JPanel {
         g2d.draw(largeHexagon);
     }
 
-    private void drawTerrainSegments(Graphics2D g2d, int centerX, int centerY, int radius, int rotation) {
-        int segmentsTerrain1 = tile.getSegmentsForTerrain(0);
+    private void drawTerrainSegments(Graphics2D g2d, int centerX, int centerY, int radius) {
+        // Parcourt les segments de 0 à 5 pour dessiner chaque segment en fonction du terrain associé
         for (int i = 0; i < 6; i++) {
-            int segmentIndex = (i + rotation) % 6;
-            g2d.setColor(segmentIndex < segmentsTerrain1 ? 
-                         getTerrainColor(tile.getTerrain(0)) : 
-                         getTerrainColor(tile.getTerrain(1)));
+            TerrainType terrain = tile.getTerrainForSegment(i);  // Récupère le terrain du segment, en prenant en compte la rotation
+            g2d.setColor(getTerrainColor(terrain));
             g2d.fillArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 60 * i, 60);
         }
     }

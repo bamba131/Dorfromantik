@@ -1,17 +1,34 @@
 package model;
 
 public class Tile {
-    private int id;  // Ajoute l'attribut id
-    private TerrainType[] terrains;  // 2 terrains maximum par tuile
-    private int segmentsForTerrain1;
-    private int rotation;
+    private int id;  // ID de la tuile
+    private TerrainType[] terrains;  // Tableau contenant deux types de terrains (ex. MER, FORET)
+    private int segmentsForTerrain1;  // Nombre de segments pour le premier terrain
+    private int rotation;  // Rotation de la tuile (en multiple de 60 degrés)
 
-    // Constructeur modifié pour inclure l'ID
     public Tile(int id, TerrainType terrain1, TerrainType terrain2, int segmentsForTerrain1) {
         this.id = id;
         this.terrains = new TerrainType[]{terrain1, terrain2};
         this.segmentsForTerrain1 = segmentsForTerrain1;
-        this.rotation = 0;
+        this.rotation = 0;  // Initialisation de la rotation à 0
+    }
+
+    // Renvoie le terrain pour l'index donné (0 ou 1)
+    public TerrainType getTerrain(int index) {
+        if (index >= 0 && index < terrains.length) {
+            return terrains[index];
+        }
+        return null;  // Retourne null si l'index est invalide
+    }
+
+    // Méthode pour obtenir le terrain associé à un segment spécifique (prend en compte la rotation)
+    public TerrainType getTerrainForSegment(int segmentIndex) {
+        int adjustedIndex = (segmentIndex - rotation + 6) % 6;
+        if (adjustedIndex < segmentsForTerrain1) {
+            return terrains[0];
+        } else {
+            return terrains[1];
+        }
     }
 
     public void rotateClockwise() {
@@ -19,9 +36,8 @@ public class Tile {
     }
 
     public void rotateCounterClockwise() {
-        rotation = (rotation + 5) % 6;  // Tourner dans le sens inverse, équivalent à -1 dans un modulo 6
+        rotation = (rotation + 5) % 6;  // Tourner dans le sens inverse
     }
-    
 
     public int getRotation() {
         return rotation;
@@ -29,13 +45,5 @@ public class Tile {
 
     public int getId() {
         return id;
-    }
-
-    public TerrainType getTerrain(int index) {
-        return index >= 0 && index < 2 ? terrains[index] : null;
-    }
-
-    public int getSegmentsForTerrain(int index) {
-        return index == 0 ? segmentsForTerrain1 : 6 - segmentsForTerrain1;
     }
 }
