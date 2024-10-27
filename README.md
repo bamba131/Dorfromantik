@@ -51,3 +51,18 @@ make clean
   ## Rapport d'avancement :
   
   Pour une analyse détaillée du projet, veuillez consulter le rapport d'avancement `Rapport.pdf`,disponible dans ce dépôt. Ce document inclut des descriptions de fonctionnalités, des diagrammes de structure, et des réflexions personnelles des auteurs sur le développement du programme.
+
+  ## API officielle de Java :
+
+- Documentation : [API Officielle Java]((Java SE 21 &amp; JDK 21)](https://iut-fbleau.fr/docs/java/api/index.html))
+- Auteur : Oracle
+
+### Crédits :
+
+- Code :
+  
+  - Bamba Top (@topb)
+  - Vicent Teissier(@teissier)
+  -David Akagunduz (@Akagunduz)
+
+
