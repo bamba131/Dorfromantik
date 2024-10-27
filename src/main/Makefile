@@ -12,9 +12,6 @@ MANIFEST_FILE = META-INF/MANIFEST.MF
 Main.class: Main.java  java/view/MenuView.class java/controller/GameController.class java/view/App.class
 	$(JC) $(JCFLAGS) Main.java
 
-###java/controller/MenuController.class: java/controller/MenuController.java java/model/MenuModel.class java/view/MenuView.class java/controller/NewListener.class java/controller/QuiListener.class java/controller/SeriesSelector.class
-###$(JC) $(JCFLAGS) java/controller/MenuController.java
-
 java/controller/NewListener.class: java/controller/NewListener.java
 	$(JC) $(JCFLAGS) java/controller/NewListener.java
 
@@ -102,13 +99,11 @@ java/view/App.class: java/view/App.java
 java/view/ScoreView.class: java/view/ScoreView.java java/view/App.class java/controller/AllScore.class java/view/BtnPerso.class java/controller/BackButtonMouseListener.class
 	$(JC) $(JCFLAGS) java/view/ScoreView.java
 
-
 java/controller/AllScore.class: java/controller/AllScore.java
 	$(JC) $(JCFLAGS) java/controller/AllScore.java
 
 java/controller/BackButtonMouseListener.class: java/controller/BackButtonMouseListener.java
 	$(JC) $(JCFLAGS) java/controller/BackButtonMouseListener.java
-
 
 ### RÈGLE POUR COPIER LES IMAGES ###
 

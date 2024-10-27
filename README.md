@@ -5,6 +5,7 @@ Ce projet Java utilise un `Makefile` situé dans le dossier `src/main/java` pour
 ## Prérequis
 - Assurez-vous d'avoir `make`, `javac`, et `java` installés sur votre système.
 ### ⚠️ **Naviguez dans le répertoire `src/main/java` avant d'utiliser les commandes suivantes.**
+### ⚠️ **Et surtout assurez vous d'avoir le fichier mariadb.jar dans le même répertoire que le Main.jar**
 
 
 ## Commandes Principales
