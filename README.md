@@ -4,12 +4,13 @@ Ce projet Java utilise un `Makefile` situé dans le dossier `src/main/java` pour
 
 ## Prérequis
 - Assurez-vous d'avoir `make`, `javac`, et `java` installés sur votre système.
-- Naviguez dans le répertoire `src/main/java` avant d'utiliser les commandes suivantes.
+### ⚠️ **Naviguez dans le répertoire `src/main/java` avant d'utiliser les commandes suivantes.**
+
 
 ## Commandes Principales
 
 ### Compilation et Création de l'archive JAR
-- **Créer l'es class**  
+- **Créer les class**  
   ```bash
   make
 - **Lancer et compiler**  
@@ -18,3 +19,6 @@ Ce projet Java utilise un `Makefile` situé dans le dossier `src/main/java` pour
 - **Créer l'archive JAR**  
   ```bash
   make Main.jar
+- **Executer le JAR**  
+  ```bash
+  java -jar Main.jar
