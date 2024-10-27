@@ -5,7 +5,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * La classe SendScore gère l'envoi de scores à une base de données.
+ * Elle contient une méthode pour insérer un score dans la table Score
+ * en utilisant JDBC (Java Database Connectivity).
+ */
 public class SendScore {
+
+    /**
+     * Insère un score dans la base de données pour une série donnée.
+     *
+     * @param idSerie l'identifiant de la série à laquelle le score est associé
+     * @param score   le score à insérer
+     */
     public void insertscore(int idSerie, int score) {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
