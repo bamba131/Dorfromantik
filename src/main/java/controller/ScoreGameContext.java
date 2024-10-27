@@ -12,6 +12,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * La classe ScoreGameContext gère le calcul et l'affichage du score dans le jeu.
+ * Elle crée des "Pockets" basées sur les tuiles placées et leurs types de terrain, 
+ * et calcule le score total en fonction de la taille de chaque Pocket.
+ */
 public class ScoreGameContext {
     private GameContext gameContext;
     private int score;
@@ -19,6 +24,12 @@ public class ScoreGameContext {
     private Map<Point, Pocket> pocketMap;  // Map des Pockets pour chaque tuile
     private Set<Pocket> pockets;  // Ensemble de toutes les Pockets
 
+    /**
+     * Constructeur pour ScoreGameContext.
+     *
+     * @param gameContext le contexte du jeu qui contient l'état de la grille
+     * @param scoreLabel le JLabel pour afficher le score
+     */
     public ScoreGameContext(GameContext gameContext, JLabel scoreLabel) {
         this.gameContext = gameContext;
         this.scoreLabel = scoreLabel;
@@ -27,7 +38,10 @@ public class ScoreGameContext {
         this.score = 0;
     }
 
-    // Méthode principale pour recalculer le score en reconstruisant toutes les Pockets
+    /**
+     * Méthode principale pour recalculer le score en reconstruisant toutes les Pockets.
+     * Elle parcourt les tuiles dans la grille et crée des Pockets par type de terrain.
+     */
     public void calculateScore() {
         score = 0;
         pockets.clear();
@@ -62,7 +76,14 @@ public class ScoreGameContext {
         updateScoreDisplay();
     }
 
-    // Recherche ou crée une Pocket pour un terrain spécifique dans une tuile
+    /**
+     * Recherche ou crée une Pocket pour un terrain spécifique dans une tuile.
+     *
+     * @param position la position de la tuile
+     * @param segment le segment de la tuile
+     * @param terrainType le type de terrain de la tuile
+     * @return la Pocket correspondante, soit une Pocket existante fusionnée, soit une nouvelle Pocket
+     */
     private Pocket findOrCreatePocket(Point position, int segment, TerrainType terrainType) {
         Pocket newPocket = new Pocket(terrainType);
         newPocket.addTile(position);
@@ -88,7 +109,16 @@ public class ScoreGameContext {
         return newPocket;
     }
 
-    // Vérifie si les segments de deux tuiles se touchent et partagent le même type de terrain
+   /**
+     * Vérifie si les segments de deux tuiles se touchent et partagent le même type de terrain.
+     *
+     * @param position1 la première position de tuile
+     * @param position2 la seconde position de tuile
+     * @param segment1 le segment de la première tuile
+     * @param segment2 le segment de la seconde tuile
+     * @param terrainType le type de terrain à vérifier
+     * @return true si les segments sont connectés, false sinon
+     */
     private boolean areSegmentsConnected(Point position1, Point position2, int segment1, int segment2, TerrainType terrainType) {
         Tile tile1 = gameContext.getHexagonMap().get(position1).getTile();
         Tile tile2 = gameContext.getHexagonMap().get(position2).getTile();
@@ -105,7 +135,13 @@ public class ScoreGameContext {
         return connected;
     }
 
-    // Obtenir la position adjacente pour un segment spécifique (0 à 5)
+     /**
+     * Obtient la position adjacente pour un segment spécifique (0 à 5).
+     *
+     * @param position la position de la tuile
+     * @param segment le segment pour lequel on cherche la position adjacente
+     * @return la position adjacente
+     */
     private Point getAdjacentPositionForSegment(Point position, int segment) {
         if (position.x % 2 == 0) {
             switch (segment) {
@@ -130,12 +166,19 @@ public class ScoreGameContext {
         }
     }
 
-    // Met à jour l'affichage du score dans GameView
+    /**
+     * Met à jour l'affichage du score dans GameView.
+     */
     private void updateScoreDisplay() {
         System.out.println("Updated Score: " + score); // Débogage du score
         scoreLabel.setText("Score: " + score);
     }
 
+    /**
+     * Retourne le score actuel.
+     *
+     * @return le score actuel
+     */
     public int getScore() {
         return score;
     }
