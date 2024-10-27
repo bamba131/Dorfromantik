@@ -1,10 +1,6 @@
 package view;
 
 import controller.SeriesSelector;
-import controller.ResumeButtonListener;
-import controller.NewGameButtonListener;
-import controller.SeriesButtonListener;
-import controller.QuitButtonListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,7 +59,7 @@ public class MenuView extends JPanel {
     /**
      * Affiche ou masque le panneau "Comment jouer".
      */
-    public void toggleHowToPlay() {
+    private void toggleHowToPlay() {
         seriesPanel.setVisible(false);
         howToPlayPanel.setVisible(!howToPlayPanel.isVisible());
         centeredPanel.removeAll();
@@ -106,10 +102,9 @@ public class MenuView extends JPanel {
         quitButton.setOpaque(true);
         quitButton.setFocusPainted(false);
 
-        // Utilisation des listeners dans des fichiers séparés
-        resumeButton.addActionListener(new ResumeButtonListener(this));
-        newGameButton.addActionListener(new NewGameButtonListener(this));
-        quitButton.addActionListener(new QuitButtonListener()); // Ajout du listener pour le bouton Quitter
+        resumeButton.addActionListener(e -> showSeriesButtons());
+        newGameButton.addActionListener(e -> toggleHowToPlay());
+        quitButton.addActionListener(e -> System.exit(0)); // Quitte l'application
 
         howToPlayPanel = createHowToPlayPanel();
         howToPlayPanel.setVisible(false);
@@ -189,7 +184,14 @@ public class MenuView extends JPanel {
         for (int i = 1; i <= 4; i++) {
             int seriesId = i;
             BtnPerso seriesButton = new BtnPerso("Série " + seriesId);
-            seriesButton.addActionListener(new SeriesButtonListener(seriesId, seriesSelector));
+            seriesButton.addActionListener(e -> {
+                GameView gameView = new GameView(seriesId);
+                App.addView(gameView, App.GAME_VIEW);
+                App.showView(App.GAME_VIEW);
+                if (seriesSelector != null) {
+                    seriesSelector.startGameWithSeries(seriesId);
+                }
+            });
 
             seriesButton.addMouseListener(new ButtonHoverListener());
             panel.add(seriesButton);

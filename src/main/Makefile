@@ -99,11 +99,16 @@ java/controller/GameEndListener.class: java/controller/GameEndListener.java
 java/view/App.class: java/view/App.java
 	$(JC) $(JCFLAGS) java/view/App.java
 
-java/view/ScoreView.class: java/view/ScoreView.java java/view/App.class java/controller/AllScore.class java/view/BtnPerso.class 
+java/view/ScoreView.class: java/view/ScoreView.java java/view/App.class java/controller/AllScore.class java/view/BtnPerso.class java/controller/BackButtonMouseListener.class
 	$(JC) $(JCFLAGS) java/view/ScoreView.java
+
 
 java/controller/AllScore.class: java/controller/AllScore.java
 	$(JC) $(JCFLAGS) java/controller/AllScore.java
+
+java/controller/BackButtonMouseListener.class: java/controller/BackButtonMouseListener.java
+	$(JC) $(JCFLAGS) java/controller/BackButtonMouseListener.java
+
 
 ### RÈGLE POUR COPIER LES IMAGES ###
 
