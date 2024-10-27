@@ -9,6 +9,12 @@ Ce projet Java utilise un `Makefile` situé dans le dossier `src/main/java` pour
 ## Commandes Principales
 
 ### Compilation et Création de l'archive JAR
+- **Créer l'es class**  
+  ```bash
+  make
+- **Lancer et compiler**  
+  ```bash
+  make run
 - **Créer l'archive JAR**  
   ```bash
   make Main.jar
