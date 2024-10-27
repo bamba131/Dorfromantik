@@ -45,7 +45,7 @@ make clean
 
   ```bash
   java -jar Main.jar
-
+  ```
 
   
   ## Rapport d'avancement :
