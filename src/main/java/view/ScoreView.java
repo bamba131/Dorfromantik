@@ -1,11 +1,12 @@
-// src/main/java/view/ScoreView.java
 package view;
+
+import controller.AllScore;
+import controller.BackButtonMouseListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import controller.AllScore;
 
 /**
  * La classe <code>ScoreView</code> représente l'interface utilisateur
@@ -78,15 +79,9 @@ public class ScoreView extends JPanel {
         // Bouton de retour au menu
         BtnPerso backButton = new BtnPerso("Retour au Menu");
         backButton.addActionListener(e -> App.showView(App.MENU_VIEW));
-        backButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                backButton.setBackground(hoverColor);
-            }
 
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                backButton.setBackground(normalColor);
-            }
-        });
+        // Ajout de BackButtonMouseListener pour le survol
+        backButton.addMouseListener(new BackButtonMouseListener(backButton, hoverColor, normalColor));
 
         // Panneau de score actuel
         JPanel currentScorePanel = new JPanel();

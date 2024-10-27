@@ -107,6 +107,10 @@ java/controller/AllScore.class: java/controller/AllScore.java
 
 ### RÈGLE POUR COPIER LES IMAGES ###
 
+Music:
+	mkdir -p classes/java/Music
+	if [ -d java/Music ]; then cp -r java/Music/* classes/java/Music/; else echo "Le répertoire java/Music n'existe pas."; fi
+
 copy-images:
 	mkdir -p classes/java/view/img
 	if [ -d java/view/img ]; then cp -r java/view/img/* classes/java/view/img/; else echo "Le répertoire java/view/img n'existe pas."; fi
@@ -119,7 +123,8 @@ $(MANIFEST_FILE):
 
 ### ARCHIVE JAR ###
 
-Main.jar: Main.class copy-images $(MANIFEST_FILE)
+Main.jar: Main.class copy-images Music $(MANIFEST_FILE)
+	mkdir -p classes/java/Music/
 	mkdir -p classes/java/view/img  
 	jar cfm Main.jar $(MANIFEST_FILE) -C classes .
 
@@ -131,6 +136,7 @@ run: Main.class copy-images
 clean:
 	-rm -f classes/**/*.class
 	-rm -rf classes/java/view/img
+	-rm -rf classes/Music
 
 ### BUTS FACTICES ###
 
