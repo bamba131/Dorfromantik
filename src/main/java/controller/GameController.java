@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * La classe GameController gère le flux de jeu et la logique principale, y compris le placement de tuiles,
+ * la mise à jour de la grille et le calcul du score. Elle prend en charge l'initialisation du jeu, 
+ * la génération de tuiles et la gestion de la fin de la partie.
+ */
 public class GameController implements TilePlacer {
     private Map<Point, HexagonTile> hexagonMap;
     private Set<Point> availablePositions;
@@ -27,6 +32,19 @@ public class GameController implements TilePlacer {
     private int seriesId;
     private GameEndListener gameEndListener;
 
+
+    /**
+     * Constructeur de la classe GameController.
+     * Initialise les composants de la partie, y compris le contexte de jeu, la série de tuiles,
+     * et le gestionnaire de fin de partie.
+     *
+     * @param gameContext      le contexte de jeu contenant l'état de la grille
+     * @param gridPanel        le panneau d'affichage de la grille
+     * @param nextTilePreview  la tuile d'aperçu pour la prochaine tuile
+     * @param scoreLabel       le label d'affichage du score
+     * @param seriesId         l'identifiant de la série de tuiles
+     * @param gameEndListener  le listener pour gérer la fin de la partie
+     */
     public GameController(GameContext gameContext, JPanel gridPanel, HexagonTile nextTilePreview, JLabel scoreLabel, int seriesId, GameEndListener gameEndListener) {
         this.seriesId = seriesId;
         this.gameContext = gameContext;
@@ -43,12 +61,24 @@ public class GameController implements TilePlacer {
         updatePreview();
     }
 
+
+    /**
+     * Charge une série de tuiles spécifiée par l'identifiant de série.
+     *
+     * @param idSeries l'identifiant de la série à charger
+     */
     public void loadSeries(int idSeries) {
         currentTiles = dbManager.getTilesBySeries(idSeries);
         tileIndex = 0;
         System.out.println("Série " + idSeries + " chargée avec " + currentTiles.size() + " tuiles.");
     }
 
+
+    /**
+     * Place une tuile à la position spécifiée dans la grille, si la position est disponible.
+     *
+     * @param position la position de la grille pour placer la tuile
+     */
     @Override
     public void placeTile(Point position) {
         if (availablePositions.contains(position)) {
@@ -87,6 +117,9 @@ public class GameController implements TilePlacer {
         }
     }
 
+    /**
+     * Termine la partie, enregistre le score final et notifie le listener de fin de partie.
+     */
     private void endGame() {
         int finalScore = scoreGameContext.getScore();
 
@@ -99,6 +132,11 @@ public class GameController implements TilePlacer {
         }
     }
 
+    /**
+     * Initialise le jeu en plaçant une tuile initiale au centre de la grille et en configurant la vue.
+     *
+     * @param cameraController le contrôleur de caméra pour gérer les déplacements de vue
+     */
     public void initializeGame(CameraController cameraController) {
         generateNextTile();
         Tile initialTile = getNextTile();
@@ -115,6 +153,13 @@ public class GameController implements TilePlacer {
         generateNextTile();
     }
 
+    /**
+     * Place la tuile initiale dans la grille et initialise les positions adjacentes comme disponibles.
+     *
+     * @param position         la position centrale pour la tuile initiale
+     * @param cameraController le contrôleur de caméra pour appliquer l'offset de vue
+     * @param tile             la tuile initiale à placer
+     */
     public void placeInitialTile(Point position, CameraController cameraController, Tile tile) {
         if (tile == null) {
             System.out.println("Erreur : tuile initiale non définie.");
@@ -132,6 +177,15 @@ public class GameController implements TilePlacer {
         }
     }
 
+    /**
+     * Ajoute une nouvelle tuile hexagonale à la grille à la position spécifiée.
+     *
+     * @param position         la position de la tuile dans la grille
+     * @param panel            le panneau contenant la grille
+     * @param hexSize          la taille de l'hexagone
+     * @param cameraController le contrôleur de caméra pour ajuster la position
+     * @param tile             la tuile à placer ou null pour un espace réservé
+     */
     public void addHexagonTile(Point position, JPanel panel, int hexSize, CameraController cameraController, Tile tile) {
         if (position == null || panel == null) {
             System.out.println("Erreur : position ou panel est null");
@@ -166,6 +220,9 @@ public class GameController implements TilePlacer {
         panel.repaint();
     }
 
+    /**
+     * Génère la prochaine tuile de la série et met à jour l'aperçu.
+     */
     public void generateNextTile() {
         if (tileIndex < currentTiles.size()) {
             nextTile = currentTiles.get(tileIndex++);
@@ -176,6 +233,9 @@ public class GameController implements TilePlacer {
         }
     }
 
+    /**
+     * Met à jour l'aperçu de la tuile suivante.
+     */
     private void updatePreview() {
         if (nextTilePreview != null) {
             if (nextTile != null) {
@@ -187,10 +247,21 @@ public class GameController implements TilePlacer {
         }
     }
 
+    /**
+     * Retourne la prochaine tuile à placer.
+     *
+     * @return la prochaine tuile ou null si aucune tuile n'est disponible
+     */
     public Tile getNextTile() {
         return nextTile;
     }
 
+    /**
+     * Retourne les positions adjacentes à une position donnée dans la grille.
+     *
+     * @param position la position centrale
+     * @return un tableau de positions adjacentes
+     */
     private Point[] getAdjacentPositions(Point position) {
         if (position.x % 2 == 0) {
             return new Point[]{
