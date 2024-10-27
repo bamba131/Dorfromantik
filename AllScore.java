@@ -21,7 +21,7 @@ public class AllScore {
         "jdbc:mariadb://dwarves.iut-fbleau.fr/akagundu",
         "akagundu", "dersim62Lodek");
         try{
-          PreparedStatement pst = cnx.prepareStatement("SELECT score from score where id_serie=?;");
+          PreparedStatement pst = cnx.prepareStatement("SELECT Score from score where id_serie=?;");
           pst.setInt(1, idSerie); 
           ResultSet rs = pst.executeQuery();
           while(rs.next()) {

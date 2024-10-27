@@ -1,3 +1,4 @@
+// src/main/java/controller/GameController.java
 package controller;
 
 import model.Tile;
@@ -20,22 +21,25 @@ public class GameController implements TilePlacer {
     private TileDatabaseManager dbManager;
     private List<Tile> currentTiles;
     private int tileIndex;
-    private ScoreGameContext scoreGameContext;  // Nouveau contexte pour le score
+    private ScoreGameContext scoreGameContext;
 
-    public GameController(GameContext gameContext, JPanel gridPanel, HexagonTile nextTilePreview, JLabel scoreLabel) {
+    private int placedTileCount = 0;
+    private int seriesId;
+    private GameEndListener gameEndListener;
+
+    public GameController(GameContext gameContext, JPanel gridPanel, HexagonTile nextTilePreview, JLabel scoreLabel, int seriesId, GameEndListener gameEndListener) {
+        this.seriesId = seriesId;
         this.gameContext = gameContext;
         this.gridPanel = gridPanel;
         this.hexagonMap = gameContext.getHexagonMap();
         this.availablePositions = gameContext.getAvailablePositions();
         this.nextTilePreview = nextTilePreview;
-
         this.dbManager = new TileDatabaseManager();
         this.tileIndex = 0;
-
-        // Initialisation de ScoreGameContext
         this.scoreGameContext = new ScoreGameContext(gameContext, scoreLabel);
+        this.gameEndListener = gameEndListener;
 
-        loadSeries(1); // Charger la série par défaut (ex. série 1)
+        loadSeries(seriesId);
         updatePreview();
     }
 
@@ -54,16 +58,12 @@ public class GameController implements TilePlacer {
                 return;
             }
 
-            System.out.println("Placement de la tuile avec ID : " + (nextTile != null ? nextTile.getId() : "null") + " à la position : " + position);
-
-            hexTile.setTile(nextTile);  // Place la tuile actuelle
+            hexTile.setTile(nextTile);
             gridPanel.revalidate();
             gridPanel.repaint();
-
             availablePositions.remove(position);
 
-            Point[] adjacentPositions = getAdjacentPositions(position);
-            for (Point adj : adjacentPositions) {
+            for (Point adj : getAdjacentPositions(position)) {
                 if (!hexagonMap.containsKey(adj)) {
                     availablePositions.add(adj);
                     addHexagonTile(adj, gridPanel, 50, null, null);
@@ -71,38 +71,43 @@ public class GameController implements TilePlacer {
             }
 
             gameContext.repaintGrid(gridPanel);
-            generateNextTile();  // Génère la tuile suivante
-
-            // Calcul et mise à jour du score
+            generateNextTile();
             scoreGameContext.calculateScore();
+
+            placedTileCount++;
+            if (placedTileCount >= 50) {
+                endGame(); // Appeler endGame pour terminer la partie
+            }
+        }
+    }
+
+    private void endGame() {
+        int finalScore = scoreGameContext.getScore();
+
+        // Enregistrer le score dans la base de données
+        new SendScore().insertscore(seriesId, finalScore);
+
+        // Notifiez le listener de la fin de la partie
+        if (gameEndListener != null) {
+            gameEndListener.onGameEnd(finalScore);
         }
     }
 
     public void initializeGame(CameraController cameraController) {
-        generateNextTile();  // Génère la première tuile et assigne une tuile valide à `nextTile`
-    
-        Tile initialTile = getNextTile();  // Récupère la tuile générée
+        generateNextTile();
+        Tile initialTile = getNextTile();
         if (initialTile == null) {
             System.out.println("Erreur : aucune tuile initiale générée.");
-            return;  // Arrête l'initialisation si aucune tuile n'a été générée
+            return;
         }
-    
-        System.out.println("ID de la tuile initiale générée : " + initialTile.getId());  // Affiche l'ID de la tuile initiale
-    
+
         int centerX = gridPanel.getPreferredSize().width / 2;
         int centerY = gridPanel.getPreferredSize().height / 2;
-    
-        Point initialPosition = new Point(0, 0);
-        initialPosition.setLocation(centerX / 50, centerY / 50);  // Calcule la position centrale
-    
-        placeInitialTile(initialPosition, cameraController, initialTile);  // Place la première tuile
-    
-        // Calculer et mettre à jour le score incluant la première tuile
+        Point initialPosition = new Point(centerX / 50, centerY / 50);
+        placeInitialTile(initialPosition, cameraController, initialTile);
         scoreGameContext.calculateScore();
-    
-        generateNextTile();  // Génère la tuile suivante
+        generateNextTile();
     }
-    
 
     public void placeInitialTile(Point position, CameraController cameraController, Tile tile) {
         if (tile == null) {
@@ -110,16 +115,13 @@ public class GameController implements TilePlacer {
             return;
         }
 
-        System.out.println("Placement de la tuile initiale avec ID : " + tile.getId() + " à la position : " + position);
+        addHexagonTile(position, gridPanel, 50, cameraController, tile);
+        availablePositions.remove(position);
 
-        addHexagonTile(position, gridPanel, 50, cameraController, tile);  // Place la première tuile
-        availablePositions.remove(position);  // Marque la position comme occupée
-
-        Point[] adjacentPositions = getAdjacentPositions(position);
-        for (Point adj : adjacentPositions) {
+        for (Point adj : getAdjacentPositions(position)) {
             if (!hexagonMap.containsKey(adj)) {
                 availablePositions.add(adj);
-                addHexagonTile(adj, gridPanel, 50, cameraController, null);  // Placeholder vide pour les positions adjacentes
+                addHexagonTile(adj, gridPanel, 50, cameraController, null);
             }
         }
     }
@@ -143,18 +145,15 @@ public class GameController implements TilePlacer {
             yOffset += (int) (Math.sqrt(3) * hexSize / 2);
         }
 
-        boolean isPlaceholder = (tile == null);  // Si tile est null, c'est un placeholder
+        boolean isPlaceholder = (tile == null);
         HexagonTile hexTile = new HexagonTile(position, isPlaceholder);
 
         if (tile != null) {
             hexTile.setTile(tile);
-        } else {
-            System.out.println("Aucun tile n'a été fourni pour cette position : " + position);
         }
 
         hexTile.setBounds(xOffset, yOffset, hexSize, hexSize);
         hexTile.addMouseListener(new HexagonMouseListener(hexTile, this, availablePositions));
-
         hexagonMap.put(position, hexTile);
         panel.add(hexTile);
         panel.revalidate();
@@ -164,21 +163,19 @@ public class GameController implements TilePlacer {
     public void generateNextTile() {
         if (tileIndex < currentTiles.size()) {
             nextTile = currentTiles.get(tileIndex++);
-            System.out.println("Génération de la prochaine tuile avec ID : " + nextTile.getId() + " (index " + tileIndex + ")");
-            updatePreview();  // Met à jour l'aperçu de la tuile suivante
+            updatePreview();
         } else {
-            nextTile = null;  // Fin de la série, plus de tuiles à placer
-            updatePreview();  // Met à jour l'aperçu pour refléter l'absence de prochaine tuile
-            System.out.println("Fin de la série. Plus de tuiles à placer.");
+            nextTile = null;
+            updatePreview();
         }
     }
 
     private void updatePreview() {
         if (nextTilePreview != null) {
             if (nextTile != null) {
-                nextTilePreview.setTile(nextTile);  // Met à jour avec une tuile valide
+                nextTilePreview.setTile(nextTile);
             } else {
-                nextTilePreview.setTile(null);  // Affiche un placeholder ou un message si `nextTile` est null
+                nextTilePreview.setTile(null);
             }
             nextTilePreview.repaint();
         }

@@ -1,8 +1,4 @@
 package main;
-
-import model.MenuModel;
-import controller.MenuController;
-import controller.SeriesSelector;
 import view.*;
 
 import javax.sound.sampled.AudioInputStream;
@@ -14,21 +10,9 @@ import java.net.URL;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MenuModel model = new MenuModel();
-            MenuView view = new MenuView();
-
-            // Initialiser SeriesSelector et le passer à MenuView
-            SeriesSelector seriesSelector = new SeriesSelector();
-            view.setSeriesSelector(seriesSelector);
-
-            // Créer MenuController avec model, view et seriesSelector
-            new MenuController(model, view, seriesSelector);
-
-            JFrame frame = App.getInstance();
-            frame.add(view);
-            frame.setVisible(true);
-
-            PlayMusic("/Music/audio.wav");
+            MenuView menuView = new MenuView();
+            App.addView(menuView, App.MENU_VIEW);
+            App.showView(App.MENU_VIEW);
         });
     }
 

@@ -1,31 +1,23 @@
+// src/main/java/view/GameView.java
 package view;
 
-import controller.GameController;
-import controller.CameraController;
-import controller.GameContext;
-import controller.MouseWheelController;
+import controller.*;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GameView extends JFrame {
+public class GameView extends JPanel implements GameEndListener {
     private JPanel gridPanel;
     private HexagonTile nextTilePreview;
     private GameController gameController;
     private CameraController cameraController;
     private GameContext gameContext;
     private JLabel scoreLabel;
-
-    // Couleurs pour le style
-    private final Color hoverColor = new Color(200, 150, 100); // Couleur de hover avec transparence
-    private final Color normalColor = new Color(243, 171, 115); // Couleur normale avec transparence
+    private int seriesId;
 
     public GameView(int seriesId) {
-        setTitle("Jeu de Tuiles");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.seriesId = seriesId;
         setLayout(new BorderLayout());
-        setSize(1500, 750); 
-        setLocationRelativeTo(null);
 
         gameContext = new GameContext();
         gridPanel = createHexagonGrid();
@@ -34,27 +26,39 @@ public class GameView extends JFrame {
 
         nextTilePreview = new HexagonTile(null, false);
         scoreLabel = new JLabel("Score: 0");
-        scoreLabel.setForeground(Color.BLACK); // Texte noir pour contraste
+        scoreLabel.setForeground(Color.BLACK);
 
         JPanel controlPanel = createControlPanel();
-        controlPanel.setPreferredSize(new Dimension(200, 600));
+        controlPanel.setPreferredSize(new Dimension(200, getPreferredSize().height));
         add(controlPanel, BorderLayout.EAST);
 
-        gameController = new GameController(gameContext, gridPanel, nextTilePreview, scoreLabel);
-        gameController.loadSeries(seriesId); // Charge la série
+        gameController = new GameController(gameContext, gridPanel, nextTilePreview, scoreLabel, seriesId, this);
+        gameController.loadSeries(seriesId);
         cameraController = new CameraController(gridPanel, gameContext);
 
         MouseWheelController wheelController = new MouseWheelController(nextTilePreview, gameController);
         addMouseWheelListener(wheelController);
 
         gameController.initializeGame(cameraController);
-        setVisible(true);
+
+        JButton backButton = new JButton("Retour");
+        backButton.setPreferredSize(new Dimension(100, 40));
+        backButton.setBackground(new Color(202, 146, 104));
+        backButton.setForeground(Color.BLACK);
+        backButton.setFocusPainted(false);
+        backButton.setBorderPainted(false);
+
+        backButton.addActionListener(e -> {
+            App.showView(App.MENU_VIEW);
+        });
+
+        controlPanel.add(backButton);
     }
 
     private JPanel createHexagonGrid() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBackground(normalColor); // Couleur de fond de la grille
+        panel.setBackground(new Color(243, 171, 115));
         panel.setPreferredSize(new Dimension(800, 800));
         return panel;
     }
@@ -69,16 +73,16 @@ public class GameView extends JFrame {
     private JPanel createControlPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(normalColor); // Couleur normale pour le panneau de contrôle
+        panel.setBackground(new Color(243, 171, 115));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel nextTileLabel = new JLabel("Prochaine tuile : ");
-        nextTileLabel.setForeground(Color.BLACK); // Texte noir pour contraste
+        nextTileLabel.setForeground(Color.BLACK);
         panel.add(nextTileLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         nextTilePreview.setPreferredSize(new Dimension(150, 150));
-        nextTilePreview.setBackground(hoverColor); // Couleur hover pour différencier
+        nextTilePreview.setBackground(new Color(200, 150, 100));
         nextTilePreview.setOpaque(true);
         panel.add(nextTilePreview);
 
@@ -86,5 +90,14 @@ public class GameView extends JFrame {
         panel.add(scoreLabel);
 
         return panel;
+    }
+
+    @Override
+    public void onGameEnd(int finalScore) {
+        SwingUtilities.invokeLater(() -> {
+            ScoreView scoreView = new ScoreView(seriesId, finalScore);
+            App.addView(scoreView, App.SCORE_VIEW);
+            App.showView(App.SCORE_VIEW);
+        });
     }
 }

@@ -1,9 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class SendScore {
     public void insertscore(int idSerie,int score) {        
@@ -18,7 +16,7 @@ public class SendScore {
         "jdbc:mariadb://dwarves.iut-fbleau.fr/akagundu",
         "akagundu", "dersim62Lodek");
         try{
-          PreparedStatement pst = cnx.prepareStatement("INSERT INTO score (id_serie, score) VALUES (?, ?);");
+          PreparedStatement pst = cnx.prepareStatement("INSERT INTO Score (id_serie, score) VALUES (?, ?);");
           pst.setInt(1, idSerie); 
           pst.setInt(2, score);
           pst.executeUpdate();

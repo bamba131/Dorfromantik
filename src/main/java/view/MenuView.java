@@ -1,10 +1,11 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
 import controller.SeriesSelector;
 
-public class MenuView extends JComponent {
+import javax.swing.*;
+import java.awt.*;
+
+public class MenuView extends JPanel {
 
     private BtnPerso resumeButton;
     private BtnPerso newGameButton;
@@ -18,7 +19,7 @@ public class MenuView extends JComponent {
     private Image backgroundImage;
     private ImageIcon logo;
     private ImageIcon quit;
-    private JLabel labelImg; // Déclaration de labelImg
+    private JLabel labelImg;
 
     public MenuView() {
         initMenu();
@@ -51,68 +52,56 @@ public class MenuView extends JComponent {
     }
 
     private void initMenu() {
-        // Initialisation du panneau latéral
         panelCote = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         panelCote.setBackground(new Color(243, 171, 115, 150));
         panelCote.setPreferredSize(new Dimension(300, 0));
 
-        // Charger les images
         backgroundImage = new ImageIcon(getClass().getResource("/java/view/img/bg.png")).getImage();
         logo = new ImageIcon(getClass().getResource("/java/view/img/D.png"));
         quit = new ImageIcon(getClass().getResource("/java/view/img/quit.png"));
         
-        // Redimensionnement des images
         Image quit1 = quit.getImage();
         Image lg = logo.getImage();
         Image resizedlg = lg.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
-        labelImg = new JLabel(new ImageIcon(resizedlg)); // Initialisation de labelImg
+        labelImg = new JLabel(new ImageIcon(resizedlg));
 
-        // Configuration du bouton "Quitter" avec une icône redimensionnée
         int buttonWidth = 65;
         int buttonHeight = 40;
         Image resizedImage = quit1.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizedImage);
 
-        // Boutons
         resumeButton = new BtnPerso("JOUER");
         newGameButton = new BtnPerso("COMMENT JOUER");
         quitButton = new JButton(resizedIcon);
 
-        // Configurer le bouton "Quitter" pour enlever le fond et la bordure
         quitButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
-        quitButton.setBackground(new Color(243, 171, 115, 150)); // Fond transparent similaire
-        quitButton.setBorderPainted(false); // Enlever la bordure pour un look plus propre
-        quitButton.setOpaque(true); // Rendre le fond visible
-        quitButton.setFocusPainted(false); // Enlever le focus autour du bouton
+        quitButton.setBackground(new Color(243, 171, 115, 150));
+        quitButton.setBorderPainted(false);
+        quitButton.setOpaque(true);
+        quitButton.setFocusPainted(false);
 
-        // Ajout des listeners pour les boutons
         resumeButton.addActionListener(e -> showSeriesButtons());
         newGameButton.addActionListener(e -> toggleHowToPlay());
 
-        // Créer le panneau "Comment jouer" et le panneau de séries
         howToPlayPanel = createHowToPlayPanel();
         howToPlayPanel.setVisible(false);
 
         seriesPanel = createSeriesPanel();
         seriesPanel.setVisible(false);
 
-        // Panneau centré pour le contenu dynamique
         centeredPanel = new JPanel(new GridBagLayout());
         centeredPanel.setOpaque(false);
         centeredPanel.add(howToPlayPanel);
 
-        // Ajout des composants au panneau latéral
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.weightx = 1.0;
         gbc.gridx = 0;
 
-        // Ajouter l'image de logo
         gbc.gridy = 0;
-        panelCote.add(labelImg, gbc); // Ajout de labelImg ici
+        panelCote.add(labelImg, gbc);
 
-        // Ajouter les boutons
         gbc.gridy = 1;
         panelCote.add(resumeButton, gbc);
 
@@ -164,6 +153,9 @@ public class MenuView extends JComponent {
             int seriesId = i;
             BtnPerso seriesButton = new BtnPerso("Série " + seriesId);
             seriesButton.addActionListener(e -> {
+                GameView gameView = new GameView(seriesId);
+                App.addView(gameView, App.GAME_VIEW);
+                App.showView(App.GAME_VIEW);
                 if (seriesSelector != null) {
                     seriesSelector.startGameWithSeries(seriesId);
                 }
@@ -179,17 +171,5 @@ public class MenuView extends JComponent {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-    }
-
-    public BtnPerso getResumeButton() {
-        return resumeButton;
-    }
-
-    public BtnPerso getNewGameButton() {
-        return newGameButton;
-    }
-
-    public JButton getQuiButton() {
-        return quitButton;
     }
 }
