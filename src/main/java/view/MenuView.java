@@ -5,6 +5,11 @@ import controller.SeriesSelector;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * La classe <code>MenuView</code> représente l'interface utilisateur principale
+ * du menu du jeu, incluant des options pour reprendre une partie, démarrer une nouvelle partie,
+ * et afficher les instructions du jeu.
+ */
 public class MenuView extends JPanel {
 
     private BtnPerso resumeButton;
@@ -21,15 +26,26 @@ public class MenuView extends JPanel {
     private ImageIcon quit;
     private JLabel labelImg;
 
+    /**
+     * Constructeur de la classe <code>MenuView</code>.
+     * Initialise le menu et ses composants.
+     */
     public MenuView() {
         initMenu();
     }
 
+    /**
+     * Définit le sélecteur de séries pour le menu.
+     * 
+     * @param seriesSelector Le sélecteur de séries à définir.
+     */
     public void setSeriesSelector(SeriesSelector seriesSelector) {
         this.seriesSelector = seriesSelector;
     }
 
-    // Méthode pour afficher les boutons de sélection de série
+    /**
+     * Affiche les boutons de sélection de série.
+     */
     public void showSeriesButtons() {
         howToPlayPanel.setVisible(false);
         centeredPanel.removeAll();
@@ -40,7 +56,9 @@ public class MenuView extends JPanel {
         repaint();
     }
 
-    // Méthode pour afficher/masquer le panneau "Comment jouer"
+    /**
+     * Affiche ou masque le panneau "Comment jouer".
+     */
     private void toggleHowToPlay() {
         seriesPanel.setVisible(false);
         howToPlayPanel.setVisible(!howToPlayPanel.isVisible());
@@ -51,6 +69,9 @@ public class MenuView extends JPanel {
         repaint();
     }
 
+    /**
+     * Initialise le menu et ses composants.
+     */
     private void initMenu() {
         panelCote = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -116,6 +137,11 @@ public class MenuView extends JPanel {
         add(centeredPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Crée et retourne le panneau affichant les instructions de jeu.
+     * 
+     * @return Un panneau contenant les instructions de jeu.
+     */
     private JPanel createHowToPlayPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -145,6 +171,11 @@ public class MenuView extends JPanel {
         return panel;
     }
 
+    /**
+     * Crée et retourne le panneau de sélection des séries.
+     * 
+     * @return Un panneau contenant les boutons de sélection de séries.
+     */
     private JPanel createSeriesPanel() {
         JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
         panel.setOpaque(false);

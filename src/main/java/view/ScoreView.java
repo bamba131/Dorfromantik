@@ -7,18 +7,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import controller.AllScore;
 
+/**
+ * La classe <code>ScoreView</code> représente l'interface utilisateur
+ * affichant le score final du joueur ainsi que le top 10 des scores
+ * pour une série spécifique à la fin d'une partie.
+ */
 public class ScoreView extends JPanel {
     private int seriesId;
     private int finalScore;
-    private final Color hoverColor = new Color(200, 150, 100,150);
+    private final Color hoverColor = new Color(200, 150, 100, 150);
     private final Color normalColor = new Color(243, 171, 115, 150); // Couleur avec transparence
 
+    /**
+     * Constructeur de la classe <code>ScoreView</code>.
+     * 
+     * @param seriesId L'identifiant de la série.
+     * @param finalScore Le score final du joueur.
+     */
     public ScoreView(int seriesId, int finalScore) {
         this.seriesId = seriesId;
         this.finalScore = finalScore;
         initScoreView();
     }
 
+    /**
+     * Initialise l'interface utilisateur pour afficher le score final
+     * et le top 10 des scores.
+     */
     private void initScoreView() {
         setLayout(new BorderLayout());
         setBackground(normalColor);

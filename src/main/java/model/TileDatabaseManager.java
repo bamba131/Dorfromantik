@@ -1,14 +1,25 @@
+// src/main/java/model/TileDatabaseManager.java
 package model;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La classe <code>TileDatabaseManager</code> gère les interactions avec la base de données
+ * pour récupérer les tuiles associées à une série donnée.
+ */
 public class TileDatabaseManager {
     private static final String DB_URL = "jdbc:mariadb://dwarves.iut-fbleau.fr/akagundu";
     private static final String USER = "akagundu";
     private static final String PASSWORD = "dersim62Lodek";
 
+    /**
+     * Récupère les tuiles associées à une série spécifique à partir de la base de données.
+     *
+     * @param idSeries L'identifiant de la série pour laquelle les tuiles doivent être récupérées.
+     * @return Une liste d'objets <code>Tile</code> associés à la série spécifiée.
+     */
     public List<Tile> getTilesBySeries(int idSeries) {
         List<Tile> tiles = new ArrayList<>();
         String query = "SELECT id, couleur1, couleur2, chiffre FROM Tuile WHERE id_serie = ? ORDER BY id ASC";
@@ -38,7 +49,4 @@ public class TileDatabaseManager {
         }
         return tiles;
     }
-    
-    
-    
 }
