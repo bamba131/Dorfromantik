@@ -8,36 +8,71 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.JPanel;
 
+/**
+ * La classe GameContext gère l'état et la configuration de la grille hexagonale dans le jeu.
+ * Elle stocke les tuiles hexagonales, les positions disponibles et l'offset de vue global.
+ * Elle offre des méthodes pour mettre à jour l'offset de vue et redessiner la grille en fonction de cet offset.
+ */
 public class GameContext {
     private Map<Point, HexagonTile> hexagonMap;  // Stocke la grille
     private Set<Point> availablePositions;  // Positions libres pour les placeholders
     private Point offset;  // Offset global pour la grille
 
+    /**
+     * Constructeur de la classe GameContext.
+     * Initialise la map des tuiles hexagonales, le set des positions disponibles et l'offset de la vue.
+     */
     public GameContext() {
         this.hexagonMap = new HashMap<>();
         this.availablePositions = new HashSet<>();
         this.offset = new Point(0, 0);  // Initialisation de l’offset à (0, 0)
     }
 
-    // Getters pour la grille, les positions et l'offset
+    /**
+     * Récupère la map des tuiles hexagonales et leurs positions.
+     *
+     * @return une map associant les positions aux instances de tuiles hexagonales
+     */
     public Map<Point, HexagonTile> getHexagonMap() {
         return hexagonMap;
     }
 
+    /**
+     * Récupère les positions disponibles pour le placement des placeholders.
+     *
+     * @return un set de points représentant les positions disponibles
+     */
     public Set<Point> getAvailablePositions() {
         return availablePositions;
     }
 
+
+    /**
+     * Récupère l'offset actuel de la vue.
+     *
+     * @return un point représentant l'offset actuel de la vue
+     */
     public Point getOffset() {
         return offset;
     }
 
-    // Méthode pour mettre à jour l'offset de la grille
+    /**
+     * Met à jour l'offset de la vue en ajoutant les valeurs spécifiées.
+     *
+     * @param deltaX le décalage horizontal de l'offset
+     * @param deltaY le décalage vertical de l'offset
+     */
     public void updateOffset(int deltaX, int deltaY) {
         offset.translate(deltaX, deltaY);
     }
 
-    // Ajout de la méthode pour recalculer les positions de la grille en fonction de l'offset
+    
+    /**
+     * Recalcule et applique la position de chaque tuile hexagonale en fonction de l'offset de vue.
+     * Actualise l'interface graphique en ajustant les positions des tuiles et en repeignant le panneau.
+     *
+     * @param gridPanel le panneau contenant la grille hexagonale, à redessiner
+     */
     public void repaintGrid(JPanel gridPanel) {
         for (Map.Entry<Point, HexagonTile> entry : hexagonMap.entrySet()) {
             Point position = entry.getKey();
