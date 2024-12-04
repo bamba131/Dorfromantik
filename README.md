@@ -42,7 +42,7 @@ make clean
 ```bash
   make Main.jar
 - **Executer le JAR**  
-
+```
   ```bash
   java -jar Main.jar
   ```
@@ -63,6 +63,6 @@ make clean
   
   - Bamba Top (@topb)
   - Vicent Teissier(@teissier)
-  -David Akagunduz (@Akagunduz)
+  - David Akagunduz (@Akagunduz)
 
 
