@@ -38,10 +38,9 @@ Utiliser la commande pour supprimer les fichiers class :
 ```bash
 make clean
 ```
-
+### Pour executer le JAR
 ```bash
-  make Main.jar
-- **Executer le JAR**  
+  make Main.jar 
 ```
   ```bash
   java -jar Main.jar
